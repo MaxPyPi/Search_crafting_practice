@@ -1,4 +1,5 @@
 from random import *
+import time
 
 important_crafts = {
     "bucket": "bø",
@@ -55,6 +56,7 @@ def question(previous_thing):
     while(previous_thing == thing):
         thing = choice(all_crafts_weighted)
     attempts = 1
+    start_time = time.time()
     while True:
         answer = input(f"what do you type when you craft {thing}? ")
         if answer == "mb" or answer == "øs":
@@ -62,7 +64,8 @@ def question(previous_thing):
         if answer == "pl" or answer == "lep":
             answer = "pl-lep"
         if thing in all_crafts and answer == all_crafts[thing]:
-            print(f"correct in {attempts} attempt(s)")
+            elapsed_time = time.time() - start_time
+            print(f"correct in {attempts} attempt(s) and {round(elapsed_time, 2)} seconds")
             break
         elif attempts == 3:
             print(f"correct answer: {all_crafts[thing]}")
