@@ -50,20 +50,26 @@ for i in niche_crafts_reversed:
 for i in inventory_crafts_reversed:
     all_crafts.extend([i] * 3)
 
-def question():
+def question(previous_thing):
     thing = choice(all_crafts_weighted)
-    answer = input(f"what do you type when you craft {thing}? ")
-    if answer == "mb" or answer == "øs":
-        answer = "mb-øs"
-    if answer == "pl" or answer == "lep":
-        answer = "pl-lep"
-    if thing in all_crafts and answer == all_crafts[thing]: #can do this because it doesn't consider second if first is false
-        print("correct")
-        return
-    else:
-        print("incorrect")
-        print(f"correct answer: {all_crafts[thing]}")
-        return
+    while(previous_thing == thing):
+        thing = choice(all_crafts_weighted)
+    attempts = 1
+    while True:
+        answer = input(f"what do you type when you craft {thing}? ")
+        if answer == "mb" or answer == "øs":
+            answer = "mb-øs"
+        if answer == "pl" or answer == "lep":
+            answer = "pl-lep"
+        if thing in all_crafts and answer == all_crafts[thing]:
+            print(f"correct in {attempts} attempt(s)")
+            break
+        elif attempts == 3:
+            print(f"correct answer: {all_crafts[thing]}")
+        attempts += 1
+        print("try again")
+    return thing
 
+previous_thing = None
 while True:
-    question()
+    previous_thing = question(previous_thing)
