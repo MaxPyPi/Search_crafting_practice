@@ -16,20 +16,17 @@ important_crafts = {
 }
 
 niche_crafts = {
-    "eyes & powder": "er",
     "boat": "eb",
-    "eyes + crossbow": "rø",
-    "junkless crossbow": "mb-øs",
     "shield": "ld",
     "iron / stone axe": "nø",
     "iron bars": "gi",
-    "tripwire hooks": "nu",
     "bow": "bu",
     "gapple": "pl-lep",
     "TNT": "nt"
 }
 
 inventory_crafts = {
+    "eyes & powder": "er",
     "wool+bricks": "h",
     "glowstone, gold axe": "lø",
     "glowstone / bricks": "gl",
@@ -38,20 +35,28 @@ inventory_crafts = {
 }
 
 all_crafts = {
-    **important_crafts_reversed,
-    **niche_crafts_reversed,
-    **inventory_crafts_reversed
+    **important_crafts,
+    **niche_crafts,
+    **inventory_crafts
 }
 
 all_crafts_weighted = []
-for i in important_crafts_reversed:
-    all_crafts.extend([i] * 4)
-for i in niche_crafts_reversed:
-    all_crafts.append(i)
-for i in inventory_crafts_reversed:
-    all_crafts.extend([i] * 3)
+for i in important_crafts:
+    all_crafts_weighted.extend([i] * 3)
+for i in niche_crafts:
+    all_crafts_weighted.append(i)
+for i in inventory_crafts:
+    all_crafts_weighted.extend([i] * 3)
 
-def question(previous_thing):
+def getHotkey():
+    while True:
+        chat_hotkey = input("What is your chat hotkey? (just enter not to use one) ")
+        if(len(chat_hotkey) > 1):
+            print("Not a valid hotkey")
+        else:
+            return chat_hotkey
+
+def question(chat_hotkey, previous_thing):
     thing = choice(all_crafts_weighted)
     while(previous_thing == thing):
         thing = choice(all_crafts_weighted)
@@ -59,20 +64,25 @@ def question(previous_thing):
     start_time = time.time()
     while True:
         answer = input(f"what do you type when you craft {thing}? ")
-        if answer == "mb" or answer == "øs":
-            answer = "mb-øs"
-        if answer == "pl" or answer == "lep":
-            answer = "pl-lep"
-        if thing in all_crafts and answer == all_crafts[thing]:
-            elapsed_time = time.time() - start_time
-            print(f"correct in {attempts} attempt(s) and {round(elapsed_time, 2)} seconds")
-            break
-        elif attempts == 3:
-            print(f"correct answer: {all_crafts[thing]}")
-        attempts += 1
-        print("try again")
+        chat_hotkey_index = answer.find(chat_hotkey)
+        if chat_hotkey_index != -1:
+            if answer == "mb" or answer == "øs":
+                answer = "mb-øs"
+            if answer == "pl" or answer == "lep":
+                answer = "pl-lep"
+            if thing in all_crafts and answer[chat_hotkey_index + 1::] == all_crafts[thing]:
+                elapsed_time = time.time() - start_time
+                print(f"correct in {attempts} attempt(s) and {round(elapsed_time, 2)} seconds")
+                break
+            elif attempts == 3:
+                print(f"correct answer: {all_crafts[thing]}")
+            attempts += 1
+            print("try again")
+        else:
+            print("You never used your chat hotkey...")
     return thing
 
 previous_thing = None
+chat_hotkey = getHotkey()
 while True:
-    previous_thing = question(previous_thing)
+    previous_thing = question(chat_hotkey, previous_thing)
