@@ -66,11 +66,12 @@ def question(chat_hotkey, previous_thing):
         answer = input(f"what do you type when you craft {thing}? ")
         chat_hotkey_index = answer.find(chat_hotkey)
         if chat_hotkey_index != -1:
-            if answer[chat_hotkey_index::] == "mb" or answer[chat_hotkey_index::] == "øs":
-                answer[chat_hotkey_index::] = "mb-øs"
-            if answer[chat_hotkey_index::] == "pl" or answer[chat_hotkey_index::] == "lep":
-                answer[chat_hotkey_index::] = "pl-lep"
-            if thing in all_crafts and answer[chat_hotkey_index + 1::] == all_crafts[thing]:
+            answer_without_hotkey = answer[chat_hotkey_index + 1:]
+            if answer_without_hotkey == "mb" or answer_without_hotkey == "øs":
+                answer_without_hotkey = "mb-øs"
+            if answer_without_hotkey == "pl" or answer_without_hotkey == "lep":
+                answer_without_hotkey = "pl-lep"
+            if thing in all_crafts and answer_without_hotkey == all_crafts[thing]:
                 elapsed_time = time.time() - start_time
                 print(f"correct in {attempts} attempt(s) and {round(elapsed_time, 2)} seconds")
                 break
